@@ -1,0 +1,63 @@
+1) Использование параметризованных запросов (Prepared Statements):
+
+1.1 Метод для mysqli:
+
+// Подключение к mysqli
+$mysqli = new mysqli("localhost", "username", "password", "database");
+
+if ($mysqli->connect_error) {
+    die("Ошибка подключения: " . $mysqli->connect_error);
+}
+
+// Подготовка запроса с параметрами
+$query = "SELECT * FROM users WHERE username = ? AND age > ?";
+$stmt = $mysqli->prepare($query);
+$username = "john";
+$age = 18;
+$stmt->bind_param("si", $username, $age);
+$stmt->execute();
+$result = $stmt->get_result();
+
+1.2) Метод для PDO:
+
+// Подключение к PDO
+$connection = new PDO('mysql:host=localhost;dbname=csrf,root,password)
+
+//Подготовка запроса с параметрами:
+$sql = "SELECT * FROM `users` where `email` = :email AND `password` = :password";
+$user = $connection->prepare($sql);
+
+1.2.1)
+$user->execute([
+    ':email' => $_POST['email'],
+    ':password' => $_POST['password'],
+]);
+
+1.2.2)
+Привязка параметров к запросу:
+$connection->bind_param(":email", $_POST['email']);
+$connection->execute();
+
+1.2.3)
+Привязка параметров к запросу:
+$connection->bind_value(":email", $_POST['email']);
+$connection->execute();
+
+
+2) Фильтрация и валидация ввода данных:
+
+FILTER_SANITIZE_STRING - удаляет или экранирует любые символы, которые могут представлять угрозу для SQL-запроса.
+
+mysqli_real_escape_string - используется для экранирования специальных символов в строках, прежде чем передавать их в SQL-запросы.
+
+addslashes: Функция addslashes экранирует специальные символы с обратным слешем (', ", \, NULL) в строке. Она может использоваться для подготовки строки для использования в SQL-запросах.
+
+Функция PDO::quote в PHP используется для экранирования значений передаваемых в SQL-выражения.
+
+2.1) $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
+
+2.2) $username = mysqli_real_escape_string($connection, $_POST['email']);
+
+2.3) $username = addslashes($_POST['email']);
+
+2.4) $username = $pdo->quote($_POST['email']);
